@@ -13,11 +13,6 @@ interface IDecode {
 interface IPayload {
   iss: string;
   sub: string;
-  aud: string;
-  iat: number;
-  exp: number;
-  azp: string;
-  gty: string;
   scope?: unknown;
 }
 
@@ -54,7 +49,6 @@ export default class AuthService {
   };
 
   private getSigningKey = (kid: string): Promise<string> => {
-    console.log('getSigningKey ::  this.jwksUri', this.jwksUri);
     const client = jwks({
       cache: true,
       cacheMaxEntries: 100,
@@ -62,12 +56,9 @@ export default class AuthService {
       jwksUri: this.jwksUri,
     });
 
-    console.log('getSigningKey ::  client', client);
-
     return new Promise((resolve, reject) => {
       client.getSigningKey(kid, (error, key) => {
         if (error) {
-          console.log('my error ==> ', error);
           reject(error);
         }
         if (key && 'publicKey' in key) {
@@ -111,24 +102,8 @@ export default class AuthService {
       } as VerifyOptions;
 
       return this.getSigningKey(decoded.header.kid)
-        .then((key) => {
-          let test;
-          console.log('before verify ==> ', key);
-          console.log('before verify token ==> ', token);
-          console.log('before verify options ==> ', options);
-          try {
-            test = verify(token, key, options) as IPayload;
-          } catch (ex: any) {
-            //handle the exception!!!
-            TODO: console.log(ex, ex.message);
-          }
-
-          console.log('test', test);
-          return test;
-        })
+        .then((key) => verify(token, key, options) as IPayload)
         .then((decoded: IPayload) => {
-          console.log('getSigningKey::decoded', decoded);
-
           return {
             principalId: decoded?.sub,
             policyDocument: this.getPolicyDocument('Allow', event.methodArn),

@@ -10,12 +10,6 @@ type GetPresignedPostUrlParams = {
 };
 
 class Uploader {
-  private readonly BUCKET = process.env.BUCKET;
-  private readonly s3;
-  private readonly repository: any;
-
-  constructor() {}
-
   async handle(event: APIGatewayEvent): Promise<APIGatewayProxyResultV2> {
     console.log('Event is', JSON.stringify(event, null, 2));
 
@@ -42,7 +36,6 @@ class Uploader {
         }),
       };
     } catch (error: unknown) {
-      console.log('ERROR is:', error);
       if (error instanceof Error) {
         return {
           statusCode: 400,

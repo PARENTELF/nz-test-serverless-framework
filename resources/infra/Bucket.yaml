@@ -1,6 +1,0 @@
-NewResource:
-  Type: AWS::S3::Bucket
-  Properties:
-    BucketName: nz-local-bucket
-    # BucketName: ${self:provider.environment.BUCKET}${self:provider.stage}
-    AccessControl: PublicRead

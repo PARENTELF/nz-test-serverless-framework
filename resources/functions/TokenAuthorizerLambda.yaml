@@ -1,0 +1,6 @@
+handler: src/auth/index.handle
+package:
+  patterns:
+    - src/auth/index.js
+    - src/auth/auth.service.js
+    - src/auth/constants.js

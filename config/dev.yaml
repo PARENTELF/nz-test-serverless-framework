@@ -4,8 +4,7 @@ ENV: 'dev'
 REGION: us-east-1
 
 # S3 Bucket
-# BUCKET: 'nz001${self:provider.stage}'
-BUCKET: 'nz-local-bucket'
+BUCKET: 'nz-${self:provider.stage}-bucket-ocra'
 
 # COGNITO
 COGNITO_USER_POOL_NAME: googletestc9d192bd_userpool_c9d192bd-staging

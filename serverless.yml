@@ -22,18 +22,12 @@ provider:
     restApi: true
   apiGateway:
     binaryMediaTypes:
-      # - 'multipart/form-data'
-      - '*/*'
+      - 'multipart/form-data'
+      # - '*/*'
 
 functions:
   upload: ${file('./resources/functions/Upload.yaml')}
-  tokenAuthorizerLambda:
-    handler: src/auth/index.handle
-    package:
-      patterns:
-        - src/auth/index.js
-        - src/auth/auth.service.js
-        - src/auth/constant.js
+  tokenAuthorizerLambda: ${file('./resources/functions/TokenAuthorizerLambda.yaml')}
 
 package:
   individually: true
@@ -42,7 +36,6 @@ package:
     - '!functions/**'
     - '!config/**'
     - '!resources/**'
-    - '!mocks/**'
     - '!src/**'
 
 plugins:
@@ -53,47 +46,7 @@ plugins:
 
 resources:
   Resources:
-    GatewayResponse:
-      Type: 'AWS::ApiGateway::GatewayResponse'
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: EXPIRED_TOKEN
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
-        StatusCode: '401'
-    # ApiGatewayAuthorizer:
-    #   Type: AWS::ApiGateway::Authorizer
-    #   Properties:
-    #     AuthorizerResultTtlInSeconds: 300
-    #     IdentitySource: method.request.header.Authorization
-    #     Name: Cognito
-    #     RestApiId:
-    #       Ref: ApiGatewayRestApi
-    #     Type: COGNITO_USER_POOLS
-    #     ProviderARNs:
-    #       - arn:aws:cognito-idp:us-east-1:464330849656:userpool/us-east-1_CFwixbKJZ
-    # REST API
-    GatewayResponseDefault4XX:
-      Type: 'AWS::ApiGateway::GatewayResponse'
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: apigw-s3-proxy
-        Description: S3 integraton REST API demo
-    # COGNITO USER POOL
-    # CognitoUserPoolGeneral:
-    #   Type: AWS::Cognito::UserPool
-    #   Properties:
-    #     UserPoolName: us-east-1_CFwixbKJZ
-    # API GATEWAY AUTHORIZER
-    # S3 definition
-    bucket: ${file('./resources/infra/Bucket.yaml')}
+    GatewayResponseDefault2XX: ${file(./resources/infra/api-gateway/gatewayResponseDefault2XX.yaml)}
+    GatewayResponseDefault4XX: ${file(./resources/infra/api-gateway/gatewayResponseDefault4XX.yaml)}
+    ApiGatewayRestApi: ${file(./resources/infra/api-gateway/apiGateway.yaml)}
+    bucket: ${file(./resources/infra/bucket/${opt:stage, 'dev'}.yaml)}

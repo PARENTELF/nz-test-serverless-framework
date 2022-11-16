@@ -1,0 +1,16 @@
+Type: AWS::S3::Bucket
+Properties:
+  BucketName: ${self:provider.environment.BUCKET}
+  AccessControl: PublicRead
+  CorsConfiguration:
+    CorsRules:
+      - AllowedOrigins:
+          - '*'
+      - AllowedHeaders:
+          - '*'
+      - AllowedMethods:
+          - GET
+          - POST
+          - OPTIONS
+          - HEAD
+      - MaxAge: 3600

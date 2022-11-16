@@ -3,22 +3,10 @@ events:
   - http:
       path: get-presigned-url
       method: get
-      RequestParameters:
-        - method.request.querystring.fileType:
-            Required: true
-            Caching: false
-        - method.request.header.Authorization:
-            Required: true
-            Caching: true
       cors:
         origin: '*'
         headers: '*'
-      authorizer:
-        ${self:custom.tokenAuthorizer}
-        # # Provide both type and authorizerId
-        # type: COGNITO_USER_POOLS # TOKEN or REQUEST or COGNITO_USER_POOLS, same as AWS Cloudformation documentation
-        # authorizerId:
-        #   Ref: ApiGatewayAuthorizer # or hard-code Authorizer ID
+      authorizer: ${self:custom.tokenAuthorizer}
 timeout: 20
 
 package:

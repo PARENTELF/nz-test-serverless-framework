@@ -1,0 +1,4 @@
+Type: AWS::ApiGateway::RestApi
+Properties:
+  Name: apigw-ocra-s3-proxy
+  Description: S3 integraton OCRA API
