@@ -1,0 +1,99 @@
+service: upload-ocra-files
+frameworkVersion: '3'
+
+custom:
+  tokenAuthorizer:
+    type: token
+    name: tokenAuthorizerLambda
+    identitySource: method.request.header.Authorization
+
+  s3:
+    host: localhost
+    directory: /tmp
+
+provider:
+  name: aws
+  region: ${self:provider.environment.REGION}
+  runtime: nodejs16.x
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage, "dev"}
+  environment: ${file(./config/${opt:stage, 'dev'}.yaml)}
+  logs:
+    restApi: true
+  apiGateway:
+    binaryMediaTypes:
+      # - 'multipart/form-data'
+      - '*/*'
+
+functions:
+  upload: ${file('./resources/functions/Upload.yaml')}
+  tokenAuthorizerLambda:
+    handler: src/auth/index.handle
+    package:
+      patterns:
+        - src/auth/index.js
+        - src/auth/auth.service.js
+        - src/auth/constant.js
+
+package:
+  individually: true
+  patterns:
+    - '!infra/**'
+    - '!functions/**'
+    - '!config/**'
+    - '!resources/**'
+    - '!mocks/**'
+    - '!src/**'
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-s3-local
+  - serverless-offline
+  - serverless-plugin-typescript
+
+resources:
+  Resources:
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+    # ApiGatewayAuthorizer:
+    #   Type: AWS::ApiGateway::Authorizer
+    #   Properties:
+    #     AuthorizerResultTtlInSeconds: 300
+    #     IdentitySource: method.request.header.Authorization
+    #     Name: Cognito
+    #     RestApiId:
+    #       Ref: ApiGatewayRestApi
+    #     Type: COGNITO_USER_POOLS
+    #     ProviderARNs:
+    #       - arn:aws:cognito-idp:us-east-1:464330849656:userpool/us-east-1_CFwixbKJZ
+    # REST API
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: apigw-s3-proxy
+        Description: S3 integraton REST API demo
+    # COGNITO USER POOL
+    # CognitoUserPoolGeneral:
+    #   Type: AWS::Cognito::UserPool
+    #   Properties:
+    #     UserPoolName: us-east-1_CFwixbKJZ
+    # API GATEWAY AUTHORIZER
+    # S3 definition
+    bucket: ${file('./resources/infra/Bucket.yaml')}

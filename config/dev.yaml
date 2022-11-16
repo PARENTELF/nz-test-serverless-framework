@@ -1,0 +1,16 @@
+ENV: 'dev'
+
+# AWS
+REGION: us-east-1
+
+# S3 Bucket
+# BUCKET: 'nz001${self:provider.stage}'
+BUCKET: 'nz-local-bucket'
+
+# COGNITO
+COGNITO_USER_POOL_NAME: googletestc9d192bd_userpool_c9d192bd-staging
+USER_POOLS_ID: us-east-1_CFwixbKJZ
+USER_POOLS_WEB_CLIENT_ID: 7oelrsikqh5tqa2e44mjr36lkr
+
+# Auth Module JWT
+JWT_ALGORITHM_TYPE: RS256
