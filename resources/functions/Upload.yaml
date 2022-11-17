@@ -1,4 +1,5 @@
 handler: src/uploader/index.handle
+role: UploadRoleBucket
 events:
   - http:
       path: get-presigned-url

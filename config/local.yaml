@@ -4,7 +4,8 @@ ENV: 'local'
 REGION: us-east-1
 
 # S3 Bucket
-BUCKET: 'nz-${self:provider.stage}-bucket-ocra-001'
+BUCKET: 'nz-${self:provider.stage}-bucket-ocra'
+BUCKET_ENDPOINT: 'http://localhost:4569'
 
 # COGNITO
 COGNITO_USER_POOL_NAME: googletestc9d192bd_userpool_c9d192bd-staging

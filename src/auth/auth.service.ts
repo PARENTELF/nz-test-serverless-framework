@@ -98,7 +98,6 @@ export default class AuthService {
       const options = {
         issuer: this.issuer,
         algorithms: [this.jwtAlgorithmType],
-        client_id: 'lol',
       } as VerifyOptions;
 
       return this.getSigningKey(decoded.header.kid)
@@ -111,8 +110,8 @@ export default class AuthService {
           };
         });
     } catch (ex: any) {
-      //handle the exception!!!
-      TODO: console.log(ex, ex.message);
+      console.error('authenticate error:', ex.message);
+      throw new Error(`authenticate error: ${ex.message}`);
     }
   }
 }

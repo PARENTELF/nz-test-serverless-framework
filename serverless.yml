@@ -46,7 +46,7 @@ plugins:
 
 resources:
   Resources:
-    GatewayResponseDefault2XX: ${file(./resources/infra/api-gateway/gatewayResponseDefault2XX.yaml)}
-    GatewayResponseDefault4XX: ${file(./resources/infra/api-gateway/gatewayResponseDefault4XX.yaml)}
-    ApiGatewayRestApi: ${file(./resources/infra/api-gateway/apiGateway.yaml)}
-    bucket: ${file(./resources/infra/bucket/${opt:stage, 'dev'}.yaml)}
+    GatewayResponseDefault4XX: ${file(./resources/infrastructure/api-gateway/gatewayResponseDefault4XX.yaml)}
+    ApiGatewayRestApi: ${file(./resources/infrastructure/api-gateway/apiGateway.yaml)}
+    Bucket: ${file(./resources/infrastructure/bucket/${opt:stage, 'dev'}.yaml)}
+    UploadRoleBucket: ${file(./resources/roles/UploadRole.yaml)}

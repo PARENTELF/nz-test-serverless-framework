@@ -6,11 +6,11 @@ Properties:
     CorsRules:
       - AllowedOrigins:
           - '*'
-      - AllowedHeaders:
-          - '*'
-      - AllowedMethods:
-          - GET
+        AllowedMethods:
           - POST
-          - OPTIONS
+          - GET
+          - PUT
+          - DELETE
           - HEAD
-      - MaxAge: 3600
+        AllowedHeaders:
+          - '*'

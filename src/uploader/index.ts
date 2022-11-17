@@ -64,7 +64,7 @@ export function createPresignedPost({
     Expires: 15,
   };
 
-  const s3 = new S3({ endpoint: 'http://localhost:4569' });
+  const s3 = getS3Instance();
   return s3.createPresignedPost(params) as unknown as Promise<S3.PresignedPost>;
 }
 
@@ -81,6 +81,12 @@ const generateId = () => {
 
   const date = new Date().toISOString().split('T')[0].replace(/-/g, '');
   return `${date}_${result}`;
+};
+
+const getS3Instance = () => {
+  return process.env.ENV === 'local'
+    ? new S3({ endpoint: process.env.BUCKET_ENDPOINT })
+    : new S3();
 };
 
 const uploader = new Uploader();
